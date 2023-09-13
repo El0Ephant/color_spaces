@@ -1,27 +1,28 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-void main() {
-  runApp(const MyApp());
+import 'package:color_spaces/hsv/hsv_tab.dart';
+import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
+
+
+void main() async {
+  final fileBytes = await File('image.jpg').readAsBytes();
+  final image = img.decodeJpg(fileBytes)!;
+  runApp(MyApp(image: image,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.image});
+  final img.Image image;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
+        useMaterial3: true
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Цветовые пространства",
-          ),
-        ),
-        body: Text("!!"),
+      home: HsvTab(
+        image: image,
       ),
     );
   }
