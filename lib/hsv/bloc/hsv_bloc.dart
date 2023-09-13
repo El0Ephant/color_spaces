@@ -9,13 +9,14 @@ part 'hsv_event.dart';
 part 'hsv_state.dart';
 
 class HsvBloc extends Bloc<HsvEvent, HsvState> {
-  HsvBloc(this._originalImage) : super(HsvLoading()) {
+  HsvBloc() : super(HsvLoading()) {
     on<HsvUpdate>(_onUpdate);
     on<HsvInit>(_onInit);
   }
-  final img.Image _originalImage;
+  late final img.Image _originalImage;
 
   void _onInit(HsvInit event, Emitter emit){
+    _originalImage = event.image;
     emit(HsvLoaded(img.encodeJpg(_originalImage)));
   }
 

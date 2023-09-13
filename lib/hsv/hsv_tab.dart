@@ -21,13 +21,13 @@ class _HsvTabState extends State<HsvTab> {
   Widget build(BuildContext context) {
     return Material(
       child: BlocProvider<HsvBloc>(
-        create: (context) => HsvBloc(widget.image)..add(HsvInit()),
+        create: (context) => HsvBloc()..add(HsvInit(widget.image)),
         child: SizedBox(
           width: 600,
           child: Column(
             children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 400),
+              SizedBox(
+                height: 400,
                 child: BlocBuilder<HsvBloc, HsvState>(
                   builder: (context, state) => switch (state){
                     HsvLoading() => const Center(

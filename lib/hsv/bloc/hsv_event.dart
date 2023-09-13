@@ -4,7 +4,8 @@ part of 'hsv_bloc.dart';
 abstract class HsvEvent {}
 
 class HsvInit extends HsvEvent{
-
+  final img.Image image;
+  HsvInit(this.image);
 }
 
 class HsvUpdate extends HsvEvent{
