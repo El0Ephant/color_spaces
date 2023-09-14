@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as img;
 import 'package:bloc/bloc.dart';
@@ -15,27 +16,38 @@ class HsvBloc extends Bloc<HsvEvent, HsvState> {
   }
   late final img.Image _originalImage;
 
-  void _onInit(HsvInit event, Emitter emit){
-    _originalImage = event.image;
-    emit(HsvLoaded(img.encodeJpg(_originalImage)));
+
+  void _onInit(HsvInit event, Emitter emit) async{
+    final result = await compute(img.decodeJpg, event.imageBytes);
+    if (result == null){
+      emit(HsvError("Не удалось декодировать изображение"));
+      return;
+    }
+    _originalImage = result;
+    emit(HsvLoaded(await compute(img.encodeJpg, result)));
   }
 
-
-  void _onUpdate(HsvUpdate event, Emitter emit){
-    emit(HsvLoading());
-    final newImage = img.Image.from(_originalImage);
+  static Uint8List _applyFilter(final (img.Image, HSVColor) message){
+    final (originalImage, filter) = message;
+    final newImage = img.Image.from(originalImage);
     for (var pixel in newImage){
       final pixelHSV = _rgbToHsv(pixel);
-      final newPixelHSV = _updateHsv(pixelHSV, event.color);
+      final newPixelHSV = _updateHsv(pixelHSV, filter);
       final (r, g, b) = _hsvToRgb(newPixelHSV);
       pixel.r = r;
       pixel.g = g;
       pixel.b = b;
     }
-    emit(HsvLoaded(img.encodeJpg(newImage)));
+    return img.encodeJpg(newImage);
   }
 
-  HSVColor _rgbToHsv(img.Pixel pixel){
+  void _onUpdate(HsvUpdate event, Emitter emit) async {
+    emit(HsvLoading());
+    final newImageBytes = await compute(_applyFilter, (_originalImage, event.color));
+    emit(HsvLoaded(newImageBytes));
+  }
+
+  static HSVColor _rgbToHsv(img.Pixel pixel){
     double r = pixel.r/255.0, g = pixel.g/255.0, b = pixel.b/255.0;
     double maxChannel = max(r, max(g, b)), minChannel = min(r, min(g, b));
     double s = maxChannel == 0 ? 0:(1 - minChannel/maxChannel), v = maxChannel;
@@ -54,7 +66,7 @@ class HsvBloc extends Bloc<HsvEvent, HsvState> {
     return HSVColor.fromAHSV(1.0, h, s, v);
   }
 
-  (num, num, num) _hsvToRgb(HSVColor hsvColor){
+  static (num, num, num) _hsvToRgb(HSVColor hsvColor){
     const double ratio = 255/100;
     double h = hsvColor.hue, s = hsvColor.saturation * 100, v = hsvColor.value * 100;
     final hInd = (h ~/ 60) % 6;
@@ -76,8 +88,8 @@ class HsvBloc extends Bloc<HsvEvent, HsvState> {
     }
   }
 
-  HSVColor _updateHsv(HSVColor pixel, HSVColor delta){
-    double h = (delta.hue * -1 - 180) * 2,
+  static HSVColor _updateHsv(HSVColor pixel, HSVColor delta){
+    double h = (delta.hue - 180) * 2,
       s = (delta.saturation - 0.5) * 2,
       v = (delta.value - 0.5) * 2;
     return HSVColor.fromAHSV(

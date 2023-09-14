@@ -28,5 +28,5 @@ class MainThirdTask extends MainState {
   const MainThirdTask(this.image);
 
   @override
-  final Uint8List? image;
+  final Uint8List image;
 }

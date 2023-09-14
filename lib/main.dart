@@ -1,6 +1,7 @@
 import 'package:color_spaces/bloc/main_bloc.dart';
 import 'package:color_spaces/image_load/image_load.dart';
 import 'package:color_spaces/task_picker.dart';
+import 'package:color_spaces/third_task/hsv_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
                             ),
                           MainFirstTask() => Text("1"),
                           MainSecondTask() => Text("2"),
-                          MainThirdTask() => Text("3"),
+                          MainThirdTask(image: var image) => HsvTab(image: image),
                         },
                       ),
                     ),
