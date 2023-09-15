@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:color_spaces/byte_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as img;
@@ -9,25 +10,30 @@ import 'package:bloc/bloc.dart';
 part 'hsv_event.dart';
 part 'hsv_state.dart';
 
+
+
 class HsvBloc extends Bloc<HsvEvent, HsvState> {
-  HsvBloc() : super(HsvLoading()) {
+  HsvBloc() : super(const HsvLoading(_initialColor)) {
     on<HsvUpdate>(_onUpdate);
     on<HsvInit>(_onInit);
   }
   late final img.Image _originalImage;
-
+  late final ImageExtension _originalExtension;
+  static const _initialColor = HSVColor.fromAHSV(1, 180, 0.5, 0.5);
+  var _pickerColor = _initialColor;
 
   void _onInit(HsvInit event, Emitter emit) async{
-    final result = await compute(img.decodeJpg, event.imageBytes);
+    _originalExtension = event.byteImage.extension;
+    final result = await compute(_originalExtension.decoder, event.byteImage.bytes);
     if (result == null){
-      emit(HsvError("Не удалось декодировать изображение"));
+      emit(HsvError(_pickerColor, "Не удалось декодировать изображение"));
       return;
     }
     _originalImage = result;
-    emit(HsvLoaded(await compute(img.encodeJpg, result)));
+    emit(HsvLoaded(_pickerColor, await compute(_originalExtension.encoder, result)));
   }
 
-  static Uint8List _applyFilter(final (img.Image, HSVColor) message){
+  static img.Image _applyFilter(final (img.Image, HSVColor) message){
     final (originalImage, filter) = message;
     final newImage = img.Image.from(originalImage);
     for (var pixel in newImage){
@@ -38,13 +44,16 @@ class HsvBloc extends Bloc<HsvEvent, HsvState> {
       pixel.g = g;
       pixel.b = b;
     }
-    return img.encodeJpg(newImage);
+    return newImage;
   }
 
   void _onUpdate(HsvUpdate event, Emitter emit) async {
-    emit(HsvLoading());
-    final newImageBytes = await compute(_applyFilter, (_originalImage, event.color));
-    emit(HsvLoaded(newImageBytes));
+    _pickerColor = event.color;
+    print(event.color);
+    emit(HsvLoading(_pickerColor));
+    final newImage = await compute(_applyFilter, (_originalImage, event.color));
+    final newImageBytes = await compute(_originalExtension.encoder, newImage);
+    emit(HsvLoaded(_pickerColor, newImageBytes));
   }
 
   static HSVColor _rgbToHsv(img.Pixel pixel){
@@ -89,14 +98,14 @@ class HsvBloc extends Bloc<HsvEvent, HsvState> {
   }
 
   static HSVColor _updateHsv(HSVColor pixel, HSVColor delta){
-    double h = (delta.hue - 180) * 2,
-      s = (delta.saturation - 0.5) * 2,
-      v = (delta.value - 0.5) * 2;
+    double h = (delta.hue - 180),
+      s = delta.saturation * 2,
+      v = delta.value * 2;
     return HSVColor.fromAHSV(
       1,
       (pixel.hue + h) % 360,
-      min(max(pixel.saturation + s, 0), 1),
-      min(max(pixel.value + v, 0), 1)
+      min(pixel.saturation * s, 1),
+      min(pixel.value * v, 1)
     );
   }
 
