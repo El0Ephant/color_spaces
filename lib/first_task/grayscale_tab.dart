@@ -21,47 +21,45 @@ class GrayscaleTab extends StatelessWidget {
           final screenWidth = MediaQuery.of(context).size.width;
           final screenHeight = MediaQuery.of(context).size.height;
 
-          return Container(
-            child: switch (state) {
-              GrayscaleLoading() => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              GrayscaleLoaded(
-                firstVersion: final firstVersion,
-                secondVersion: final secondVersion,
-                subtraction: final subtraction,
-              ) =>
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomImage(
-                          firstVersion.bytes,
-                          title: "NTSC",
-                          width: screenWidth / 3,
-                        ),
-                        CustomImage(
-                          secondVersion.bytes,
-                          title: "HDTV",
-                          width: screenWidth / 3,
-                        ),
-                      ],
-                    ),
-                    CustomImage(
-                      subtraction.bytes,
-                      title: "Нормализованная разность",
-                      width: screenWidth / 3,
-                    ),
-                  ],
-                ),
-              GrayscaleError() => const Center(
-                  child: Text(
-                    "Не удалось декодировать изображение",
+          return switch (state) {
+            GrayscaleLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            GrayscaleLoaded(
+              firstVersion: final firstVersion,
+              secondVersion: final secondVersion,
+              subtraction: final subtraction,
+            ) =>
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomImage(
+                        firstVersion.bytes,
+                        title: "NTSC",
+                        width: screenWidth / 3,
+                      ),
+                      CustomImage(
+                        secondVersion.bytes,
+                        title: "HDTV",
+                        width: screenWidth / 3,
+                      ),
+                    ],
                   ),
+                  CustomImage(
+                    subtraction.bytes,
+                    title: "Нормализованная разность",
+                    width: screenWidth / 3,
+                  ),
+                ],
+              ),
+            GrayscaleError() => const Center(
+                child: Text(
+                  "Не удалось декодировать изображение",
                 ),
-            },
-          );
+              ),
+          };
         },
       ),
     );

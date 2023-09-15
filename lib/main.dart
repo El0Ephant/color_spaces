@@ -63,20 +63,25 @@ class MyApp extends StatelessWidget {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: SingleChildScrollView(
-                        child: switch (state) {
-                          MainImageLoad() => ImageLoad(
-                              state: state,
-                              onLoad: () {
-                                BlocProvider.of<MainBloc>(context)
-                                    .add(const MainImageLoadStarted());
-                              },
-                            ),
-                          MainFirstTask() => GrayscaleTab(
-                              state: state,
-                            ),
-                          MainSecondTask() => Text("2"),
-                          MainThirdTask() => Text("3"),
-                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 20.0,
+                          ),
+                          child: switch (state) {
+                            MainImageLoad() => ImageLoad(
+                                state: state,
+                                onLoad: () {
+                                  BlocProvider.of<MainBloc>(context)
+                                      .add(const MainImageLoadStarted());
+                                },
+                              ),
+                            MainFirstTask() => GrayscaleTab(
+                                state: state,
+                              ),
+                            MainSecondTask() => Text("2"),
+                            MainThirdTask() => Text("3"),
+                          },
+                        ),
                       ),
                     ),
                   ),
