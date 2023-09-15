@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:color_spaces/bloc_singletons.dart';
 import 'package:color_spaces/byte_image.dart';
 import 'package:color_spaces/custom_image.dart';
 import 'package:color_spaces/third_task/bloc/hsv_bloc.dart';
@@ -15,8 +16,8 @@ class HsvTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: BlocProvider<HsvBloc>(
-        create: (context) => HsvBloc()..add(HsvInit(image)),
+      child: BlocProvider<HsvBloc>.value(
+        value: BlocSingletons.createHsvBloc(image),
         child: BlocBuilder<HsvBloc, HsvState>(
           buildWhen: (previous, current) => previous is HsvError || current is HsvError,
           builder: (context, state) => switch (state) {

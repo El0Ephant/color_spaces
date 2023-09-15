@@ -1,4 +1,5 @@
 import 'package:color_spaces/bloc/main_bloc.dart';
+import 'package:color_spaces/bloc_singletons.dart';
 import 'package:color_spaces/first_task/grayscale_tab.dart';
 import 'package:color_spaces/image_load/image_load.dart';
 import 'package:color_spaces/task_picker.dart';
@@ -30,7 +31,11 @@ class MyApp extends StatelessWidget {
         ),
         body: BlocProvider(
           create: (context) => MainBloc(),
-          child: BlocBuilder<MainBloc, MainState>(
+          child: BlocConsumer<MainBloc, MainState>(
+            listenWhen: (previous, current) => previous.image.hashCode != current.image.hashCode,
+            listener: (context, state) {
+              BlocSingletons.closeHsvBloc();
+            },
             builder: (context, state) {
               return Column(
                 children: [
