@@ -3,7 +3,11 @@ import 'package:color_spaces/custom_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageLoad extends StatelessWidget {
-  const ImageLoad({super.key, required this.onLoad, required this.state, });
+  const ImageLoad({
+    super.key,
+    required this.onLoad,
+    required this.state,
+  });
 
   final VoidCallback onLoad;
   final MainImageLoad state;
@@ -12,14 +16,18 @@ class ImageLoad extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        OutlinedButton(
-          onPressed: onLoad,
-          child: const Text(
-            "Загрузить",
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8.0,
+          ),
+          child: OutlinedButton(
+            onPressed: onLoad,
+            child: const Text(
+              "Загрузить",
+            ),
           ),
         ),
-        if (state.image != null)
-          CustomImage(state.image!),
+        if (state.image != null) CustomImage(state.image!.bytes),
       ],
     );
   }

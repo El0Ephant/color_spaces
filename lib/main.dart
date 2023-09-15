@@ -1,4 +1,5 @@
 import 'package:color_spaces/bloc/main_bloc.dart';
+import 'package:color_spaces/first_task/grayscale_tab.dart';
 import 'package:color_spaces/image_load/image_load.dart';
 import 'package:color_spaces/task_picker.dart';
 import 'package:flutter/material.dart';
@@ -41,21 +42,20 @@ class MyApp extends StatelessWidget {
                             BlocProvider.of<MainBloc>(context)
                                 .add(const MainImageLoadRequested());
                           }),
-                          ButtonData("Задание 1", () {
+                          ButtonData("Оттенки серого", () {
                             BlocProvider.of<MainBloc>(context)
                                 .add(const MainFirstTaskRequested());
                           }),
-                          ButtonData("Задание 2", () {
+                          ButtonData("Цветовые каналы", () {
                             BlocProvider.of<MainBloc>(context)
                                 .add(const MainSecondTaskRequested());
                           }),
-                          ButtonData("Задание 3", () {
+                          ButtonData("HSV", () {
                             BlocProvider.of<MainBloc>(context)
                                 .add(const MainThirdTaskRequested());
                           }),
                         ],
-                        inactiveButtons:
-                            state.image == null ? [1, 2, 3] : null,
+                        inactiveButtons: state.image == null ? [1, 2, 3] : null,
                       ),
                     ),
                   ),
@@ -71,7 +71,9 @@ class MyApp extends StatelessWidget {
                                     .add(const MainImageLoadStarted());
                               },
                             ),
-                          MainFirstTask() => Text("1"),
+                          MainFirstTask() => GrayscaleTab(
+                              state: state,
+                            ),
                           MainSecondTask() => Text("2"),
                           MainThirdTask() => Text("3"),
                         },

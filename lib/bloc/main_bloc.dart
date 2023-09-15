@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
+import 'package:color_spaces/byte_image.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:meta/meta.dart';
 
 part 'main_event.dart';
@@ -15,11 +18,21 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<MainImageLoadStarted>((event, emit) async {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         withData: true,
+        type: FileType.image,
       );
-      if (result != null && result.files.single.bytes != null) {
+      final bytes = result?.files.single.bytes;
+      final filePath = result?.files.single.path;
+      if (bytes != null && filePath != null) {
         emit(
           MainImageLoad(
-            result.files.single.bytes!,
+            ByteImage(
+              bytes,
+              ImageExtension.fromString(
+                path.extension(
+                  filePath,
+                ),
+              ),
+            ),
           ),
         );
       }
@@ -48,7 +61,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<MainSaveRequested>((event, emit) async {
-      final path = await FilePicker.platform.saveFile();
+      final path = await FilePicker.platform.saveFile(
+        type: FileType.image,
+      );
       if (path != null) {
         File(path).writeAsBytes(event.image);
       }
