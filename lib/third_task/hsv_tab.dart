@@ -8,21 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
-class HsvTab extends StatefulWidget {
+class HsvTab extends StatelessWidget {
   const HsvTab({Key? key, required this.image}) : super(key: key);
   final ByteImage image;
-
-  @override
-  State<HsvTab> createState() => _HsvTabState();
-}
-
-class _HsvTabState extends State<HsvTab> {
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: BlocProvider<HsvBloc>(
-        create: (context) => HsvBloc()..add(HsvInit(widget.image)),
+        create: (context) => HsvBloc()..add(HsvInit(image)),
         child: BlocBuilder<HsvBloc, HsvState>(
           buildWhen: (previous, current) => previous is HsvError || current is HsvError,
           builder: (context, state) => switch (state) {
