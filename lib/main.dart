@@ -1,11 +1,14 @@
 import 'package:color_spaces/bloc/main_bloc.dart';
+import 'package:color_spaces/bloc_singletons.dart';
 import 'package:color_spaces/first_task/grayscale_tab.dart';
 import 'package:color_spaces/image_load/image_load.dart';
 import 'package:color_spaces/task_picker.dart';
+import 'package:color_spaces/third_task/hsv_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+
+void main() async {
   runApp(const MyApp());
 }
 
@@ -28,7 +31,11 @@ class MyApp extends StatelessWidget {
         ),
         body: BlocProvider(
           create: (context) => MainBloc(),
-          child: BlocBuilder<MainBloc, MainState>(
+          child: BlocConsumer<MainBloc, MainState>(
+            listenWhen: (previous, current) => previous.image.hashCode != current.image.hashCode,
+            listener: (context, state) {
+              BlocSingletons.closeHsvBloc();
+            },
             builder: (context, state) {
               return Column(
                 children: [
@@ -63,25 +70,20 @@ class MyApp extends StatelessWidget {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 20.0,
-                          ),
-                          child: switch (state) {
-                            MainImageLoad() => ImageLoad(
-                                state: state,
-                                onLoad: () {
-                                  BlocProvider.of<MainBloc>(context)
-                                      .add(const MainImageLoadStarted());
-                                },
-                              ),
-                            MainFirstTask() => GrayscaleTab(
-                                state: state,
-                              ),
-                            MainSecondTask() => Text("2"),
-                            MainThirdTask() => Text("3"),
-                          },
-                        ),
+                        child: switch (state) {
+                          MainImageLoad() => ImageLoad(
+                              state: state,
+                              onLoad: () {
+                                BlocProvider.of<MainBloc>(context)
+                                    .add(const MainImageLoadStarted());
+                              },
+                            ),
+                          MainFirstTask() => GrayscaleTab(
+                              state: state,
+                            ),
+                          MainSecondTask() => Text("2"),
+                          MainThirdTask(image: var image) => HsvTab(image: image),
+                        },
                       ),
                     ),
                   ),
