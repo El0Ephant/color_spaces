@@ -3,10 +3,10 @@ import 'package:color_spaces/bloc_singletons.dart';
 import 'package:color_spaces/first_task/grayscale_tab.dart';
 import 'package:color_spaces/image_load/image_load.dart';
 import 'package:color_spaces/task_picker.dart';
+import 'package:color_spaces/second_task/channels_tab.dart';
 import 'package:color_spaces/third_task/hsv_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 void main() async {
   runApp(const MyApp());
@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
         body: BlocProvider(
           create: (context) => MainBloc(),
           child: BlocConsumer<MainBloc, MainState>(
-            listenWhen: (previous, current) => previous.image.hashCode != current.image.hashCode,
+            listenWhen: (previous, current) =>
+                previous.image.hashCode != current.image.hashCode,
             listener: (context, state) {
               BlocSingletons.closeHsvBloc();
             },
@@ -81,8 +82,9 @@ class MyApp extends StatelessWidget {
                           MainFirstTask() => GrayscaleTab(
                               state: state,
                             ),
-                          MainSecondTask() => Text("2"),
-                          MainThirdTask(image: var image) => HsvTab(image: image),
+                          MainSecondTask() => ChannelsTab(state: state),
+                          MainThirdTask(image: var image) =>
+                            HsvTab(image: image),
                         },
                       ),
                     ),
