@@ -5,7 +5,6 @@ import 'package:color_spaces/second_task/bloc/color_channels_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:image/image.dart' as img;
 
 class ChannelsTab extends StatelessWidget {
   const ChannelsTab({super.key, required this.state});
@@ -65,9 +64,12 @@ class ChannelsTab extends StatelessWidget {
                           width: screenWidth / 4,
                           child: SfCartesianChart(
                             series: <ChartSeries>[
-                              HistogramSeries<num, num>(
-                                dataSource: redPixels,
-                                yValueMapper: (num data, _) => data,
+                              ColumnSeries<MapEntry<int, num>, num>(
+                                dataSource: redPixels.asMap().entries.toList(),
+                                xValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.key,
+                                yValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.value,
                               ),
                             ],
                           ),
@@ -76,9 +78,13 @@ class ChannelsTab extends StatelessWidget {
                           width: screenWidth / 4,
                           child: SfCartesianChart(
                             series: <ChartSeries>[
-                              HistogramSeries<num, num>(
-                                dataSource: greenPixels,
-                                yValueMapper: (num data, _) => data,
+                              ColumnSeries<MapEntry<int, num>, num>(
+                                dataSource:
+                                    greenPixels.asMap().entries.toList(),
+                                xValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.key,
+                                yValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.value,
                               ),
                             ],
                           ),
@@ -87,9 +93,12 @@ class ChannelsTab extends StatelessWidget {
                           width: screenWidth / 4,
                           child: SfCartesianChart(
                             series: <ChartSeries>[
-                              HistogramSeries<num, num>(
-                                dataSource: bluePixels,
-                                yValueMapper: (num data, _) => data,
+                              ColumnSeries<MapEntry<int, num>, num>(
+                                dataSource: bluePixels.asMap().entries.toList(),
+                                xValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.key,
+                                yValueMapper: (MapEntry<int, num> data, _) =>
+                                    data.value,
                               ),
                             ],
                           ),

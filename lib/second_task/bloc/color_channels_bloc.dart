@@ -56,11 +56,27 @@ class ColorChannelsBloc extends Bloc<ColorChannelsEvent, ColorChannelsState> {
       initialImage.extension.encoder,
       blueImage,
     );
-    var redPixels = await compute((_) => pixels.map((e) => e.r).toList(), null);
-    var greenPixels =
+
+    var redPixelsRaw =
+        await compute((_) => pixels.map((e) => e.r).toList(), null);
+    var redPixels = List.filled(256, 0);
+    for (var i = 0; i < 256; i++) {
+      redPixels[i] = redPixelsRaw.where((el) => el == i).length;
+    }
+
+    var greenPixelsRaw =
         await compute((_) => pixels.map((e) => e.g).toList(), null);
-    var bluePixels =
+    var greenPixels = List.filled(256, 0);
+    for (var i = 0; i < 256; i++) {
+      greenPixels[i] = greenPixelsRaw.where((el) => el == i).length;
+    }
+
+    var bluePixelsRaw =
         await compute((_) => pixels.map((e) => e.b).toList(), null);
+    var bluePixels = List.filled(256, 0);
+    for (var i = 0; i < 256; i++) {
+      bluePixels[i] = bluePixelsRaw.where((el) => el == i).length;
+    }
 
     emit(
       ColorChannelsLoaded(
