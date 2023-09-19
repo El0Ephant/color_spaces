@@ -12,11 +12,17 @@ class ColorChannelsLoaded extends ColorChannelsState {
     this.redVersion,
     this.greenVersion,
     this.blueVersion,
+    this.redPixels,
+    this.greenPixels,
+    this.bluePixels,
   );
 
   final ByteImage redVersion;
   final ByteImage greenVersion;
   final ByteImage blueVersion;
+  final List<num> redPixels;
+  final List<num> greenPixels;
+  final List<num> bluePixels;
 }
 
 class ColorChannelsError extends ColorChannelsState {

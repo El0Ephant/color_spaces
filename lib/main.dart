@@ -82,9 +82,15 @@ class MyApp extends StatelessWidget {
                           MainFirstTask() => GrayscaleTab(
                               state: state,
                             ),
-                          MainSecondTask() => ChannelsTab(state: state),
-                          MainThirdTask(image: var image) =>
-                            HsvTab(image: image),
+                          MainSecondTask() => ChannelsTab(
+                              state: state,
+                            ),
+                          MainThirdTask(
+                            image: var image,
+                          ) =>
+                            HsvTab(
+                              image: image,
+                            ),
                         },
                       ),
                     ),
