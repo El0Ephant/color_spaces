@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.image.hashCode != current.image.hashCode,
             listener: (context, state) {
+              BlocSingletons.closeGrayscaleBloc();
               BlocSingletons.closeHsvBloc();
             },
             builder: (context, state) {
@@ -71,27 +72,30 @@ class MyApp extends StatelessWidget {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: SingleChildScrollView(
-                        child: switch (state) {
-                          MainImageLoad() => ImageLoad(
-                              state: state,
-                              onLoad: () {
-                                BlocProvider.of<MainBloc>(context)
-                                    .add(const MainImageLoadStarted());
-                              },
-                            ),
-                          MainFirstTask() => GrayscaleTab(
-                              state: state,
-                            ),
-                          MainSecondTask() => ChannelsTab(
-                              state: state,
-                            ),
-                          MainThirdTask(
-                            image: var image,
-                          ) =>
-                            HsvTab(
-                              image: image,
-                            ),
-                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: switch (state) {
+                            MainImageLoad() => ImageLoad(
+                                state: state,
+                                onLoad: () {
+                                  BlocProvider.of<MainBloc>(context)
+                                      .add(const MainImageLoadStarted());
+                                },
+                              ),
+                            MainFirstTask() => GrayscaleTab(
+                                state: state,
+                              ),
+                            MainSecondTask() => ChannelsTab(
+                                state: state,
+                              ),
+                            MainThirdTask(
+                              image: var image,
+                            ) =>
+                              HsvTab(
+                                image: image,
+                              ),
+                          },
+                        ),
                       ),
                     ),
                   ),

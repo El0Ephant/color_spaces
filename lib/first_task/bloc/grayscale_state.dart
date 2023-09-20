@@ -12,11 +12,15 @@ class GrayscaleLoaded extends GrayscaleState {
     this.firstVersion,
     this.secondVersion,
     this.subtraction,
+    this.firstIntensity,
+    this.secondIntensity,
   );
 
   final ByteImage firstVersion;
   final ByteImage secondVersion;
   final ByteImage subtraction;
+  final List<int> firstIntensity;
+  final List<int> secondIntensity;
 }
 
 class GrayscaleError extends GrayscaleState {

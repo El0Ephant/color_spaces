@@ -24,14 +24,20 @@ class GrayscaleBloc extends Bloc<GrayscaleEvent, GrayscaleState> {
         return;
       }
 
-      final firstPixels = _toGrayscale(
+      img.Image firstPixels;
+      List<int> firstIntensity;
+
+      (firstPixels, firstIntensity) = _toGrayscale(
         pixels,
         0.299,
         0.587,
         0.114,
       );
 
-      final secondPixels = _toGrayscale(
+      img.Image secondPixels;
+      List<int> secondIntensity;
+
+      (secondPixels, secondIntensity) = _toGrayscale(
         pixels,
         0.2126,
         0.7152,
@@ -72,24 +78,37 @@ class GrayscaleBloc extends Bloc<GrayscaleEvent, GrayscaleState> {
             subtract,
             initialImage.extension,
           ),
+          firstIntensity,
+          secondIntensity,
         ),
       );
     });
   }
 
-  img.Image _toGrayscale(
+  (img.Image, List<int>) _toGrayscale(
     img.Image pixels,
     double rWeight,
     double gWeight,
     double bWeight,
   ) {
     var result = img.Image.from(pixels);
+    var intensityRaw = List.filled(pixels.height*pixels.width, 0);
+    int i = 0;
+
     for (var pixel in result) {
       final intensity =
           pixel.r * rWeight + pixel.g * gWeight + pixel.b * bWeight;
       pixel.r = pixel.g = pixel.b = intensity;
+      intensityRaw[i] = intensity.round();
+      i++;
     }
-    return result;
+
+
+    var intensity = List.filled(256, 0);
+    for (var i in intensityRaw) {
+      intensity[i]++;
+    }
+    return (result, intensity);
   }
 
   img.Image _subtract(

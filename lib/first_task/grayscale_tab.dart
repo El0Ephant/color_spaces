@@ -4,6 +4,7 @@ import 'package:color_spaces/custom_image.dart';
 import 'package:color_spaces/first_task/bloc/grayscale_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GrayscaleTab extends StatelessWidget {
   const GrayscaleTab({super.key, required this.state});
@@ -29,6 +30,8 @@ class GrayscaleTab extends StatelessWidget {
               firstVersion: final firstVersion,
               secondVersion: final secondVersion,
               subtraction: final subtraction,
+              firstIntensity: final firstIntensity,
+              secondIntensity: final secondIntensity,
             ) =>
               Column(
                 children: [
@@ -44,6 +47,41 @@ class GrayscaleTab extends StatelessWidget {
                         secondVersion.bytes,
                         title: "HDTV",
                         width: screenWidth / 3,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: screenWidth / 4,
+                        child: SfCartesianChart(
+                          series: <ChartSeries>[
+                            ColumnSeries<MapEntry<int, num>, num>(
+                              dataSource:
+                                  firstIntensity.asMap().entries.toList(),
+                              xValueMapper: (MapEntry<int, num> data, _) =>
+                                  data.key,
+                              yValueMapper: (MapEntry<int, num> data, _) =>
+                                  data.value,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: screenWidth / 4,
+                        child: SfCartesianChart(
+                          series: <ChartSeries>[
+                            ColumnSeries<MapEntry<int, int>, num>(
+                              dataSource:
+                                  secondIntensity.asMap().entries.toList(),
+                              xValueMapper: (MapEntry<int, int> data, _) =>
+                                  data.key,
+                              yValueMapper: (MapEntry<int, int> data, _) =>
+                                  data.value,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

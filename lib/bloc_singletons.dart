@@ -17,6 +17,8 @@ abstract class BlocSingletons {
     }
   }
 
+  static void closeGrayscaleBloc() => _grayscaleBloc?.close();
+
   static int? _channelsHashcode;
   static ColorChannelsBloc? _channelsBloc;
 
