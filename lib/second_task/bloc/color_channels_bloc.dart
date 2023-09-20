@@ -57,26 +57,30 @@ class ColorChannelsBloc extends Bloc<ColorChannelsEvent, ColorChannelsState> {
       blueImage,
     );
 
-    var redPixelsRaw =
-        await compute((_) => pixels.map((e) => e.r).toList(), null);
-    var redPixels = List.filled(256, 0);
-    for (var i = 0; i < 256; i++) {
-      redPixels[i] = redPixelsRaw.where((el) => el == i).length;
-    }
-
-    var greenPixelsRaw =
-        await compute((_) => pixels.map((e) => e.g).toList(), null);
-    var greenPixels = List.filled(256, 0);
-    for (var i = 0; i < 256; i++) {
-      greenPixels[i] = greenPixelsRaw.where((el) => el == i).length;
-    }
-
-    var bluePixelsRaw =
-        await compute((_) => pixels.map((e) => e.b).toList(), null);
-    var bluePixels = List.filled(256, 0);
-    for (var i = 0; i < 256; i++) {
-      bluePixels[i] = bluePixelsRaw.where((el) => el == i).length;
-    }
+var asyncList = [
+compute((pixels) {
+  var redPixels = List.filled(256, 0);
+  for (var el in pixels.map((e) => e.r.toInt())) {
+    redPixels[el] += 1;
+  }
+  return redPixels;
+}, pixels),
+compute((pixels) {
+  var greenPixels = List.filled(256, 0);
+  for (var el in pixels.map((e) => e.g.toInt())) {
+    greenPixels[el] += 1;
+  }
+  return greenPixels;
+}, pixels),
+compute((pixels) {
+  var bluePixels = List.filled(256, 0);
+  for (var el in pixels.map((e) => e.b.toInt())) {
+    bluePixels[el] += 1;
+  }
+  return bluePixels;
+}, pixels),
+];
+final[redPixels, greenPixels, bluePixels] = await Future.wait(asyncList);
 
     emit(
       ColorChannelsLoaded(
