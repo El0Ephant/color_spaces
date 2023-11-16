@@ -1,3 +1,6 @@
+# Для задания 5 ПИ
+*.bin
+
 # Miscellaneous
 *.class
 *.log
